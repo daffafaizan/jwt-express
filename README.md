@@ -1,6 +1,6 @@
 # Express.js JWT Authentication Template
 
-This repository serves as a simple JWT authentication and authorization template using Express.js. The template includes a basic user model and implements a straightforward authentication system with a single token (access token) for verification. It utilizes Postgres as the database and Sequelize as the ORM. To see the **advanced** version, see the `feat/advanced-jwt` branch.
+This repository serves as a simple JWT authentication and authorization template using Express.js. The template includes a basic user model and implements a straightforward authentication system with a single token (access token) for verification. It utilizes Postgres as the database and Sequelize as the ORM. To see the **advanced** version with two tokens (access and refresh token), see the `feat/advanced-jwt` branch.
 
 ## Features
 
