@@ -23,8 +23,8 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const token = await authService.login(req, res);
-    if (!token) {
+    const { accessToken, refreshToken } = await authService.login(req, res);
+    if (!accessToken || !refreshToken) {
       return res.status(404).json({ message: "User not found!" });
     }
     res.status(200).json({ message: "Successfully logged in!" });
@@ -42,8 +42,18 @@ const logout = (req, res, next) => {
   res.status(200).json({ message: "Successfully logged out!" });
 };
 
+const refreshAccessToken = async (req, res, next) => {
+  try {
+    await authService.refreshToken(req, res);
+    res.status(200).json({ message: "Access token successfully refreshed!" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
+  refreshAccessToken,
 };

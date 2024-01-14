@@ -44,22 +44,61 @@ const login = async (req, res) => {
   if (!(await bcrypt.compare(req.body.password, user.password))) {
     throw new Error("Invalid credentials!");
   }
-  const token = jwt.sign({ id: user.id }, env.ACCESS_TOKEN_SECRET);
-  res.cookie("jwt", token, {
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // One day
+  const accessToken = jwt.sign({ id: user.id }, env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m",
   });
-  return token;
+  const refreshToken = jwt.sign({ id: user.id }, env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "7d",
+  });
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    maxAge: 15 * 60 * 1000, // 15 minutes
+  });
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+  return { accessToken, refreshToken };
 };
 
 const logout = async (res) => {
-  res.cookie("jwt", "", {
+  res.cookie("accessToken", "", {
     maxAge: 0,
   });
+  res.cookie("refreshToken", "", {
+    maxAge: 0,
+  });
+};
+
+const refreshToken = async (req, res) => {
+  const refreshToken = req.cookies["refreshToken"];
+  if (!refreshToken) {
+    throw new Error("Unauthorized. Refresh token not provided!");
+  }
+  try {
+    const decodedRefreshToken = jwt.verify(
+      refreshToken,
+      env.REFRESH_TOKEN_SECRET,
+    );
+    const newAccessToken = jwt.sign(
+      { id: decodedRefreshToken.id },
+      env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "15m",
+      },
+    );
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+  } catch (err) {
+    throw new Error("Unauthorized. Invalid refresh token!");
+  }
 };
 
 module.exports = {
   register,
   login,
   logout,
+  refreshToken,
 };
