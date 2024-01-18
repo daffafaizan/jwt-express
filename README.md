@@ -1,11 +1,12 @@
 # Express.js JWT Authentication Template
 
-This repository serves as a simple JWT authentication and authorization template using Express.js. The template includes a basic user model and implements a straightforward authentication system with a single token (access token) for verification. It utilizes Postgres as the database and Sequelize as the ORM. To see the **advanced** version with two tokens (access and refresh token), see the `feat/advanced-jwt` branch.
+This repository serves as a simple JWT authentication and authorization template using Express.js. The template includes a basic user model and implements a straightforward authentication system with a two tokens (access token and refresh token) for verification. It utilizes Postgres as the database and Sequelize as the ORM..
 
 ## Features
 
 - User registration with password hashing
 - User login with JWT token generation
+- Token refresh for long sessions
 - Middleware for token verification on protected routes
 - Simple user management (Create, Read, Update, and Delete)
 - Basic error handling
@@ -24,6 +25,7 @@ Unprotected Routes
 - **POST /api/v1/auth/register:** Register a new user.
 - **POST /api/v1/auth/login:** Login and receive an access token.
 - **POST /api/v1/auth/logout:** Logout and delete the access token.
+- **POST /api/v1/auth/refresh-token:** Refresh the access token.
 
 Protected Routes (Requires Authentication)
 
@@ -36,6 +38,7 @@ Protected Routes (Requires Authentication)
 
 - **PORT:** Port for the server to run on.
 - **ACCESS_TOKEN_SECRET:** Secret key for JWT token generation.
+- **REFRESH_TOKEN_SECRET:** Secret key for JWT token generation.
 - **DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT:** Database configuration.
 
 ## Database
