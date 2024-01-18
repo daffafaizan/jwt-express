@@ -8,12 +8,14 @@ const { authenticateUser } = require("../middlewares/authMiddleware.js");
 // User Routes
 const userRouter = Router();
 
-userRouter.route("/").get(authenticateUser, userController.getAllUsers);
+userRouter.use(authenticateUser);
+
+userRouter.route("/").get(userController.getAllUsers);
 
 userRouter
   .route("/:id")
-  .get(authenticateUser, userController.getUserById)
-  .patch(authenticateUser, userController.updateUserById)
-  .delete(authenticateUser, userController.deleteUserById);
+  .get(userController.getUserById)
+  .patch(userController.updateUserById)
+  .delete(userController.deleteUserById);
 
 module.exports = userRouter;
