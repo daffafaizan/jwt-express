@@ -13,7 +13,7 @@ const register = async (req, res, next) => {
     if (err.message.includes("already exists")) {
       res.status(403).json({ error: err.message });
     }
-    if (err.message.includes("required fields")) {
+    if (err.message.includes("must be filled")) {
       res.status(400).json({ error: err.message });
     }
     console.log(err);

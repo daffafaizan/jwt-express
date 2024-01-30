@@ -13,7 +13,7 @@ const register = async (req) => {
   const username = req.body.username;
   const password = req.body.password;
   if (!name || !username || !password) {
-    throw new Error("Name, username, and password are required fields!");
+    throw new Error("All required fields must be filled!");
   }
   const existingUsername = await User.findOne({
     where: {

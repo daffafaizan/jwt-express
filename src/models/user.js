@@ -29,9 +29,11 @@ const User = db.define("user", {
   },
   accessToken: {
     type: Sequelize.STRING,
+    allowNull: true,
   },
   refreshToken: {
     type: Sequelize.STRING,
+    allowNull: true,
   },
 });
 
