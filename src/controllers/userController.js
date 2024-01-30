@@ -12,10 +12,10 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-const getUserById = async (req, res, next) => {
-  const id = req.params.id;
+const getUserBySlug = async (req, res, next) => {
+  const slug = req.params.slug;
   try {
-    const user = await userService.getUserById(id);
+    const user = await userService.getUserBySlug(slug);
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
@@ -26,32 +26,17 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const updateUserById = async (req, res, next) => {
-  const id = req.params.id;
+const updateProfile = async (req, res, next) => {
   try {
-    const user = await userService.updateUserById(id, req);
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" });
-    }
+    await userService.updateProfile(req);
     res.status(201).json({ message: "User updated!" });
   } catch (err) {
     if (err.message.includes("already exists")) {
       res.status(400).json({ message: err.message });
     }
-    console.log(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-const deleteUserById = async (req, res, next) => {
-  const id = req.params.id;
-  try {
-    const user = await userService.deleteUserById(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+    if (err.message.includes("Unauthorized")) {
+      res.status(401).json({ message: err.message });
     }
-    res.status(200).json({ message: "User deleted!" });
-  } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -59,7 +44,6 @@ const deleteUserById = async (req, res, next) => {
 
 module.exports = {
   getAllUsers,
-  getUserById,
-  updateUserById,
-  deleteUserById,
+  getUserBySlug,
+  updateProfile,
 };

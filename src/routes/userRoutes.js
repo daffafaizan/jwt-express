@@ -10,12 +10,8 @@ const userRouter = Router();
 
 userRouter.use(authenticateUser);
 
-userRouter.route("/").get(userController.getAllUsers);
-
-userRouter
-  .route("/:id")
-  .get(userController.getUserById)
-  .patch(userController.updateUserById)
-  .delete(userController.deleteUserById);
+userRouter.route("/all").get(userController.getAllUsers);
+userRouter.route("/profile").get(userController.getProfile);
+userRouter.route("/profile/:slug").get(userController.getUserBySlug);
 
 module.exports = userRouter;
