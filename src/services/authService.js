@@ -12,6 +12,7 @@ const register = async (req) => {
   const name = req.body.name;
   const username = req.body.username;
   const password = req.body.password;
+  const role = req.body.role || "user";
   if (!name || !username || !password) {
     throw new Error("All required fields must be filled!");
   }
@@ -28,6 +29,7 @@ const register = async (req) => {
     name: name,
     username: username,
     password: hashedPassword,
+    role: role,
     accessToken: "",
     refreshToken: "",
   });
@@ -49,12 +51,21 @@ const login = async (req, res) => {
     throw new Error("Invalid credentials!");
   }
   const id = user.id;
-  const accessToken = jwt.sign({ id: id }, env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
-  });
-  const refreshToken = jwt.sign({ id: id }, env.REFRESH_TOKEN_SECRET, {
-    expiresIn: "7d",
-  });
+  const role = user.role;
+  const accessToken = jwt.sign(
+    { id: id, role: role },
+    env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: "15m",
+    },
+  );
+  const refreshToken = jwt.sign(
+    { id: id, role: role },
+    env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: "7d",
+    },
+  );
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     sameSite: "None",
@@ -70,7 +81,7 @@ const login = async (req, res) => {
   user.accessToken = accessToken;
   user.refreshToken = refreshToken;
   await user.save();
-  return { id, accessToken, refreshToken };
+  return { id, role, accessToken, refreshToken };
 };
 
 const logout = async (req, res) => {
@@ -115,7 +126,7 @@ const refreshToken = async (req, res) => {
       env.REFRESH_TOKEN_SECRET,
     );
     const newAccessToken = jwt.sign(
-      { id: decodedRefreshToken.id },
+      { id: decodedRefreshToken.id, role: decodedRefreshToken.role },
       env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "15m",

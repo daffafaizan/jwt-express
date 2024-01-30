@@ -27,6 +27,10 @@ const User = db.define("user", {
     allowNull: false,
     len: [7, 30],
   },
+  role: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
   accessToken: {
     type: Sequelize.STRING,
     allowNull: true,
